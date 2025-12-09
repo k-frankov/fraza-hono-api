@@ -37,8 +37,27 @@ The API will be available at `http://localhost:3000`
 ### 3. Test Endpoints
 
 - **Health Check**: `http://localhost:3000/health`
-- **Hello API**: `http://localhost:3000/api/hello?name=World`
-- **Profile (Auth)**: `http://localhost:3000/api/profile`
+- **Chat**: `POST http://localhost:3000/api/chat`
+- **User Profile**: `GET/POST http://localhost:3000/api/user/profile`
+- **Studio**: `POST http://localhost:3000/api/studio/generate`
+- **Scripts**: `GET http://localhost:3000/api/scripts/list`
+- **Script Processing**: `POST http://localhost:3000/api/script/process`
+
+## 🔑 Environment Variables
+
+Create a `.env` file with the following variables:
+
+```env
+PORT=3000
+DATABASE_URL=postgres://user:pass@host:port/db
+AZURE_OPENAI_KEY=your_openai_key
+AZURE_STORAGE_CONNECTION_STRING=your_storage_connection_string
+AZURE_TTS_KEY=your_tts_key
+AZURE_TTS_REGION=swedencentral
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_CLIENT_EMAIL=your_client_email
+FIREBASE_PRIVATE_KEY=your_private_key
+```
 
 ## 🐳 Docker
 

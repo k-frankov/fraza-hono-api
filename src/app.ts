@@ -3,13 +3,16 @@ import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 import { prettyJSON } from 'hono/pretty-json';
 import { secureHeaders } from 'hono/secure-headers';
-import { initializeFirebase } from './lib/firebase';
-import { Variables } from './types';
+import { initializeFirebase } from './lib/firebase.js';
+import { Variables } from './types.js';
 
 // Routes
-import healthRoute from './routes/health';
-import helloRoute from './routes/hello';
-import profileRoute from './routes/profile';
+import healthRoute from './routes/health.js';
+import chatRoute from './routes/chat.js';
+import usersRoute from './routes/users.js';
+import studioRoute from './routes/studio.js';
+import scriptsRoute from './routes/scripts.js';
+import scriptRoute from './routes/script.js';
 
 // Initialize services
 initializeFirebase();
@@ -31,8 +34,11 @@ app.use('*', cors({
 
 // Mount routes
 app.route('/health', healthRoute);
-app.route('/api/hello', helloRoute);
-app.route('/api/profile', profileRoute);
+app.route('/api/chat', chatRoute);
+app.route('/api/user', usersRoute);
+app.route('/api/studio', studioRoute);
+app.route('/api/scripts', scriptsRoute);
+app.route('/api/script', scriptRoute);
 
 // Root endpoint
 app.get('/', (c) => {

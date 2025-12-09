@@ -1,6 +1,6 @@
 import { createMiddleware } from 'hono/factory';
-import * as admin from 'firebase-admin';
-import { Variables } from '../types';
+import { getAuth } from '../lib/firebase.js';
+import { Variables } from '../types.js';
 
 // Middleware to verify Firebase token
 export const verifyFirebaseToken = createMiddleware<{ Variables: Variables }>(async (c, next) => {
@@ -13,14 +13,14 @@ export const verifyFirebaseToken = createMiddleware<{ Variables: Variables }>(as
   const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
   try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
+    const decodedToken = await getAuth().verifyIdToken(token);
     
     // Add user info to context
     c.set('user', {
       uid: decodedToken.uid,
       email: decodedToken.email,
-      name: decodedToken.name,
-      picture: decodedToken.picture,
+      name: typeof decodedToken.name === 'string' ? decodedToken.name : undefined,
+      picture: typeof decodedToken.picture === 'string' ? decodedToken.picture : undefined,
     });
 
     await next();

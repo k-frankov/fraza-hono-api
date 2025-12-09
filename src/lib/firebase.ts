@@ -21,10 +21,12 @@ export function initializeFirebase() {
     });
 
     firebaseInitialized = true;
-    console.log('✅ Firebase Admin initialized');
+    console.info('✅ Firebase Admin initialized');
   } catch (error) {
     console.error('❌ Failed to initialize Firebase Admin:', error);
   }
 }
 
-export const auth = admin.auth();
+export function getAuth() {
+  return admin.auth();
+}
