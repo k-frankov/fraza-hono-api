@@ -35,7 +35,7 @@ app.post('/process', async (c) => {
         learning_language
       ) VALUES (
         ${userId}, 
-        ${result.refinedScript.substring(0, 50) + '...'}, 
+        ${result.title}, 
         ${result.refinedScript}, 
         ${nativeLanguage || 'English'}, 
         ${learningLanguage}

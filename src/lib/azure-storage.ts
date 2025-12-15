@@ -81,3 +81,26 @@ export async function deleteAudioFile(fileName: string): Promise<void> {
   
   await blockBlobClient.deleteIfExists();
 }
+
+export async function deleteAudioFilesByPrefix(prefix: string): Promise<{ deletedCount: number; errorCount: number }> {
+  const client = getBlobServiceClient();
+  if (!client) {
+    throw new Error('Azure Storage not configured');
+  }
+
+  const containerClient = client.getContainerClient(CONTAINER_NAME);
+
+  let deletedCount = 0;
+  let errorCount = 0;
+
+  for await (const blob of containerClient.listBlobsFlat({ prefix })) {
+    try {
+      await containerClient.deleteBlob(blob.name);
+      deletedCount++;
+    } catch {
+      errorCount++;
+    }
+  }
+
+  return { deletedCount, errorCount };
+}

@@ -1,5 +1,7 @@
 import { Hono } from 'hono';
 import { sql } from '../lib/db.js';
+import { deleteAudioFilesByPrefix } from '../lib/azure-storage.js';
+import { verifyFirebaseToken } from '../middleware/auth.js';
 
 const app = new Hono();
 
@@ -91,6 +93,63 @@ app.get('/:id', async (c) => {
     return c.json({ 
       error: 'Failed to fetch script',
       message: error instanceof Error ? error.message : 'Unknown error'
+    }, 500);
+  }
+});
+
+// DELETE /api/scripts/:id
+// Auth: pass Firebase ID token in Authorization: Bearer <token>
+app.delete('/:id', verifyFirebaseToken, async (c) => {
+  try {
+    const scriptId = c.req.param('id');
+    const user = c.get('user');
+    const requestUserId = user?.uid;
+
+    if (!scriptId) {
+      return c.json({ error: 'Missing script ID' }, 400);
+    }
+
+    if (!requestUserId) {
+      return c.json({ error: 'Unauthorized - missing user identity' }, 401);
+    }
+
+    const [script] = await sql`
+      SELECT id, user_id
+      FROM scripts
+      WHERE id = ${scriptId}
+    `;
+
+    if (!script) {
+      return c.json({ error: 'Script not found' }, 404);
+    }
+
+    if (script.user_id !== requestUserId) {
+      return c.json({ error: 'Forbidden: script does not belong to user' }, 403);
+    }
+
+    // Best-effort: delete related audio blobs first.
+    const prefix = `${requestUserId}/script_${scriptId}_`;
+    let audioDeletion: { deletedCount: number; errorCount: number } | { error: string } = { deletedCount: 0, errorCount: 0 };
+    try {
+      audioDeletion = await deleteAudioFilesByPrefix(prefix);
+    } catch (e) {
+      audioDeletion = { error: e instanceof Error ? e.message : 'Failed to delete audio files' };
+    }
+
+    // Delete DB rows
+    await sql`DELETE FROM script_chunks WHERE script_id = ${scriptId}`;
+    await sql`DELETE FROM scripts WHERE id = ${scriptId}`;
+
+    return c.json({
+      success: true,
+      deletedScriptId: scriptId,
+      audioDeletion,
+    });
+  } catch (error) {
+    console.error('Failed to delete script:', error);
+    return c.json({
+      error: 'Failed to delete script',
+      message: error instanceof Error ? error.message : 'Unknown error',
     }, 500);
   }
 });

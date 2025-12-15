@@ -74,8 +74,8 @@ function buildSystemPrompt(format: string, tone: string, language?: string): str
   if (isStandardScript) {
     structureSection = [
       'STRUCTURE:',
-      '- Include a brief, atmospheric scene description in parentheses at the beginning (setting the scene, describing initial actions).',
-      '- For dialogues/interactions, include occasional action descriptions in parentheses between lines where appropriate.',
+      '- Include a brief, factual scene description in parentheses at the beginning (describe the location, objects, people\'s positions and what they\'re doing).',
+      '- For dialogues/interactions, include occasional action descriptions in parentheses (e.g., "picks up the metal wrench", "walks toward the wooden door", "opens the glass bottle").',
       '- DO NOT use [SCENE START] or [SCENE END] tags.'
     ].join('\n');
   } else {
@@ -98,9 +98,15 @@ FORMAT: ${instruction}
 ${structureSection}
 
 VOCABULARY & STYLE:
+- STRICTLY AVOID poetic, flowery, or abstract descriptions.
+- Focus on PRAGMATIC, EDUCATIONAL content that teaches useful vocabulary.
+- Describe objects with materials (wooden table, metal chair, glass window, plastic bottle).
+- Include sizes and measurements (large, small, 2 meters tall, heavy, light).
+- Use comparative language (bigger than, smaller than, as tall as).
+- Describe specific actions with verbs (picks up, puts down, opens, closes, walks toward, reaches for).
+- Include body language and gestures (nods, shrugs, points at, looks at).
 - Use clear, practical, and descriptive language suitable for language learners.
-- Avoid overly poetic, flowery, or abstract descriptions. Focus on concrete details and actions.
-- Make it authentic and educational, but prioritize clarity over literary flair.
+- Prioritize clarity and utility over literary flair.
 - Use idioms and phrasal verbs naturally where appropriate for the level.
 - Incorporate common discourse markers and transition phrases.
 - Ensure the language sounds natural for the chosen format.
@@ -108,10 +114,24 @@ VOCABULARY & STYLE:
 - If generating written text: Use appropriate formatting (paragraphs, emojis for social media, etc.).
 
 GUIDELINES:
-- Create engaging, realistic content that language learners will enjoy
-- Use appropriate vocabulary for the level
-- Make it culturally relevant and modern
-- Keep it authentic to the requested format
+- The primary goal is EDUCATIONAL value.
+- Create content that helps students learn specific vocabulary (materials, dimensions, actions).
+- Include practical, everyday objects and situations.
+- Avoid metaphors, symbolism, and abstract concepts.
+- Use appropriate vocabulary for the level.
+- Make it culturally relevant and modern.
+- Keep it authentic to the requested format but functional.
+
+EXAMPLES OF WHAT TO INCLUDE:
+✓ "She picks up the heavy metal kettle from the wooden counter."
+✓ "The room is about 4 meters wide with white walls."
+✓ "He\'s taller than his brother."
+✓ "She reaches for the plastic container on the top shelf."
+
+EXAMPLES TO AVOID:
+✗ "The golden sunset painted the sky with dreams."
+✗ "Her soul danced with joy."
+✗ "Time seemed to stand still in that magical moment."
 
 Output only the content, nothing else.`;
 }

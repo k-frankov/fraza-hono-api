@@ -6,6 +6,7 @@ export interface ProcessedChunk {
 }
 
 export interface ProcessedScriptResponse {
+  title: string;
   refinedScript: string;
   chunks: ProcessedChunk[];
 }
@@ -15,22 +16,29 @@ export async function processScript(script: string, learningLanguage: string, na
 Your goal is to prepare text for audio/voice narration and language practice.
 
 TASKS:
-1. "Voicification": Rewrite the input script to be more suitable for voice narration. 
+1. Create a Title: Generate a short, descriptive title (5-10 words) that captures the main idea or educational focus of the script.
+   - The title should be in ${nativeLanguage}.
+   - Make it clear what the student will learn from this content.
+   - Focus on the practical scenario or topic (e.g., "Ordering Coffee at a Busy Café", "Comparing Laptop Sizes at Tech Store").
+2. "Voicification": Rewrite the input script to be more suitable for voice narration. 
    - Make it sound natural and conversational.
    - Improve flow and readability.
    - Keep it in the SAME language as the input (which should be ${nativeLanguage}).
-   - Keep descriptive narration but make it PROSAIC and CONCRETE. Avoid poetic, flowery, or overly lyrical descriptions. Focus on clear, observable details useful for language learning.
+   - Keep descriptive narration but make it PROSAIC, PRAGMATIC and CONCRETE. 
+   - STRICTLY AVOID poetic, flowery, or overly lyrical descriptions. 
+   - Focus on clear, observable details useful for language learning (materials, sizes, comparisons, actions).
    - REMOVE technical tags like [SCENE START], [SCENE END].
-2. Chunking: Split the rewritten script into meaningful chunks.
+3. Chunking: Split the rewritten script into meaningful chunks.
    - Chunks should be short phrases or sentences (3-10 words ideal).
    - Suitable for turn-by-turn audio practice.
    - Include both dialogue and narration chunks.
-3. Translation: Translate each chunk into ${learningLanguage}.
+4. Translation: Translate each chunk into ${learningLanguage}.
    - The translation should be accurate and natural.
 
 OUTPUT FORMAT:
 Return ONLY valid JSON with this structure:
 {
+  "title": "Short descriptive title in ${nativeLanguage}",
   "refinedScript": "The full rewritten script in ${nativeLanguage} (dialogue + narration, no tags)",
   "chunks": [
     {
