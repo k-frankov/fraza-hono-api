@@ -6,7 +6,13 @@ $CONTAINER_APP_ENV = "fraza-env"
 $CONTAINER_APP_NAME = "fraza-hono-api"
 $GITHUB_USERNAME = "k-frankov"
 $IMAGE_NAME = "fraza-hono-api"
-$IMAGE_TAG = "latest"
+
+# Prefer deploying an explicit tag (e.g. a commit SHA) to avoid stale `latest` pulls.
+$IMAGE_TAG = Read-Host "Image tag to deploy (default: latest)"
+if ([string]::IsNullOrWhiteSpace($IMAGE_TAG)) {
+    $IMAGE_TAG = "latest"
+}
+
 $FULL_IMAGE_NAME = "ghcr.io/$GITHUB_USERNAME/$IMAGE_NAME`:$IMAGE_TAG"
 
 Write-Host "================================================" -ForegroundColor Cyan
@@ -99,6 +105,26 @@ if ($null -eq $appExists) {
 } else {
     # Update existing Container App
     Write-Host "🔄 Updating existing Container App..." -ForegroundColor Green
+
+    # For private GHCR images, we must configure registry credentials on the Container App.
+    # If your image is public, you can press Enter.
+    $ghToken = Read-Host "Enter your GitHub Personal Access Token for GHCR (press Enter if image is public)"
+
+    if ($ghToken) {
+        Write-Host "🔐 Configuring registry credentials for ghcr.io..." -ForegroundColor Green
+        az containerapp registry set `
+            --name $CONTAINER_APP_NAME `
+            --resource-group $RESOURCE_GROUP `
+            --server ghcr.io `
+            --username $GITHUB_USERNAME `
+            --password $ghToken
+
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "❌ Failed to set registry credentials!" -ForegroundColor Red
+            exit 1
+        }
+    }
+
     az containerapp update `
         --name $CONTAINER_APP_NAME `
         --resource-group $RESOURCE_GROUP `
