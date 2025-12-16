@@ -12,13 +12,13 @@ app.post('/process', async (c) => {
       script: string;
       learningLanguage: string;
       nativeLanguage?: string;
-      userId?: string;
+      userId: string;
     }>();
-    const { script, learningLanguage, nativeLanguage, userId = 'anonymous' } = body;
+    const { script, learningLanguage, nativeLanguage, userId } = body;
 
-    if (!script || !learningLanguage) {
+    if (!script || !learningLanguage || !userId) {
       return c.json({ 
-        error: 'Missing required fields: script and learningLanguage' 
+        error: 'Missing required fields: script, learningLanguage, and userId' 
       }, 400);
     }
 
