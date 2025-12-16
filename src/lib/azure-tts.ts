@@ -17,7 +17,7 @@ function getVoiceForLanguage(language: string): string {
   
   if (lang.startsWith('fi')) return 'fi-FI-NooraNeural';
   if (lang.startsWith('en')) return 'en-US-AriaNeural';
-  if (lang.startsWith('ru')) return 'ru-RU-DariyaNeural';
+  if (lang.startsWith('ru')) return 'ru-RU-SvetlanaNeural';
   if (lang.startsWith('es')) return 'es-ES-ElviraNeural';
   if (lang.startsWith('de')) return 'de-DE-KatjaNeural';
   if (lang.startsWith('fr')) return 'fr-FR-DeniseNeural';
