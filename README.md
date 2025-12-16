@@ -86,21 +86,13 @@ On every push to `master`, the workflow in `.github/workflows/build-and-push-ghc
 
 Add these in GitHub → Settings → Secrets and variables → Actions:
 
-**Azure auth (pick ONE option)**
+**Azure auth (Option A)**
 
-Option A (simplest): Service Principal JSON
+- `AZURE_CREDENTIALS` (service principal JSON)
 
-- `AZURE_CREDENTIALS` (output of `az ad sp create-for-rbac --sdk-auth ...`)
+**GHCR**
 
-Option B: OIDC (no client secret)
-
-- `AZURE_CLIENT_ID`
-- `AZURE_TENANT_ID`
-- `AZURE_SUBSCRIPTION_ID`
-
-**GHCR (only if your GHCR package is private)**
-
-- `GHCR_PAT` (must have at least `read:packages`)
+- `GHCR_PAT` (must have at least `read:packages`; used both for pushing and for Azure pulls)
 
 Notes:
 
