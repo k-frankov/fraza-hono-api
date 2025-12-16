@@ -75,6 +75,40 @@ npm run docker:run
 
 ## 📦 Deployment to Azure Container Apps
 
+### Recommended: GitHub Actions CD (automatic deploy)
+
+On every push to `master`, the workflow in `.github/workflows/build-and-push-ghcr.yml` will:
+
+- Build and push the Docker image to GHCR
+- Deploy the newly built image to Azure Container Apps
+
+#### GitHub Actions secrets required
+
+Add these in GitHub → Settings → Secrets and variables → Actions:
+
+**Azure auth (pick ONE option)**
+
+Option A (simplest): Service Principal JSON
+
+- `AZURE_CREDENTIALS` (output of `az ad sp create-for-rbac --sdk-auth ...`)
+
+Option B: OIDC (no client secret)
+
+- `AZURE_CLIENT_ID`
+- `AZURE_TENANT_ID`
+- `AZURE_SUBSCRIPTION_ID`
+
+**GHCR (only if your GHCR package is private)**
+
+- `GHCR_PAT` (must have at least `read:packages`)
+
+Notes:
+
+- The workflow deploys the immutable tag `${GITHUB_SHA}` (and also publishes `:latest`).
+- This removes the need to paste a PAT on every manual deploy.
+
+### Manual deployment (scripts)
+
 ### Step 1: Setup GitHub Container Registry
 
 1. Create a GitHub Personal Access Token:
